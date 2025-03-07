@@ -17,16 +17,21 @@ app.add_middleware(
         allow_methods=["*"],
         allow_headers=["*"]
     )
-    
-# knowledge-graph --> knowledge_graph
 
+@app.get("/")
+def home():
+    return {"message": "Core services on Fly.io -- active!"}
+
+class TextRequest(BaseModel):
+    text: str
+    
 # analyze-complexity --> text_analysis
 @app.post("/analyze-complexity")
-def analyze_complexity_stream_relay(req):
+def analyze_complexity_stream_relay(req: TextRequest):
     headers = {
         "Content-Type": "application/json",
     }
-    resp = requests.post(f"http://localhost:8001/extract-analyze-complexity-stream", json={"text": req.text}, headers=headers, stream=True)
+    resp = requests.post(f"https://text-analysis-api.fly.dev/extract-analyze-complexity-stream", json={"text": req.text}, headers=headers, stream=True)
     # return resp.json()
 
     if resp.status_code != 200:
@@ -38,8 +43,4 @@ def analyze_complexity_stream_relay(req):
                 yield line + "\n"
 
     return StreamingResponse(stream_llm_response(), media_type="application/json")
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
 

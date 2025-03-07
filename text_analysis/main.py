@@ -1,6 +1,7 @@
 import json, asyncio
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import nltk, uvicorn
 from fastapi import FastAPI, HTTPException, Depends
 from typing import List, Dict
@@ -13,6 +14,8 @@ nltk.download('brown')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('vader_lexicon')
+nltk.download('punkt_tab')
+
 
 # nltk stuff for analysis
 from nltk import sent_tokenize, word_tokenize, pos_tag, RegexpParser
@@ -216,9 +219,11 @@ def analyze_complexity(req):
         }
     }
     
+class TextRequest(BaseModel):
+    text: str
 
 @app.post("/extract-analyze-complexity-stream")
-async def analyze_complexity_stream(req):
+async def analyze_complexity_stream(req: TextRequest):
     text = req.text.strip()
     if not text:
         raise HTTPException(status_code=400, detail="No text provided")
