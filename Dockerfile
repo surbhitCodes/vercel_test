@@ -17,10 +17,6 @@ RUN pip install -r /app/core/requirements.txt \
 COPY . /app
 ENV PYTHONPATH="/app"
 
-# Set NLTK data path (if needed)
-COPY ./nltk_data /app/nltk_data
-ENV NLTK_DATA=/app/nltk_data
-
 # Expose the correct public-facing port for Fly.io
 EXPOSE 8000
 
