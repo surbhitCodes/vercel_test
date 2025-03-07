@@ -17,8 +17,10 @@ RUN pip install -r /app/core/requirements.txt \
 COPY . /app
 ENV PYTHONPATH="/app"
 
-# Expose the correct public-facing port for Fly.io
-EXPOSE 8000
+# Expose the public-facing port for Fly.io
+EXPOSE 8000 8001
 
-# Start ONLY the Core service, and call text_analysis internally
-CMD ["uvicorn", "core.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start only core and text_analysis services
+CMD ["sh", "-c", "\
+    uvicorn text_analysis.main:app --host 0.0.0.0 --port 8001 & \
+    uvicorn core.main:app --host 0.0.0.0 --port 8000"]
