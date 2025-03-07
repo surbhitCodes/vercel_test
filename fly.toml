@@ -1,4 +1,4 @@
-app = " vercel-test-icy-snow-2326"
+app = "vercel-test-icy-snow-2326"
 
 [env]
 PORT = "8000"  # Ensure your app runs on port 8000
