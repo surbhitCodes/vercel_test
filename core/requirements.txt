@@ -1,6 +1,6 @@
-asyncio
 pydantic
+python-dotenv
 fastapi[standard]
 uvicorn
-nltk
-numpy
+requests
+mangum

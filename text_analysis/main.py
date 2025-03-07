@@ -1,6 +1,7 @@
 import json, asyncio
 from fastapi.responses import StreamingResponse
-import nltk, uvicorn, sys, os
+from fastapi.middleware.cors import CORSMiddleware
+import nltk, uvicorn
 from fastapi import FastAPI, HTTPException, Depends
 from typing import List, Dict
 from dataclasses import asdict, dataclass
@@ -19,13 +20,17 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import brown
 from nltk.probability import FreqDist
 
-# access local library
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from common.config import (enable_cors, verify_api_key)
-from common.schema import TextRequest
 
-app = FastAPI(title="Text Complexity Analyzer", dependencies=[Depends(verify_api_key)])
-enable_cors(app) 
+app = FastAPI()
+
+app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"]
+    )
+    
 
 @dataclass
 class SentenceMetrics:
@@ -174,7 +179,7 @@ class TextAnalyzer:
 
 
 @app.post("/extract-analyze-complexity")
-def analyze_complexity(req: TextRequest):
+def analyze_complexity(req):
     """
     Analyze text complexity using the TextAnalyzer (previously Django-based).
     """
@@ -213,7 +218,7 @@ def analyze_complexity(req: TextRequest):
     
 
 @app.post("/extract-analyze-complexity-stream")
-async def analyze_complexity_stream(req: TextRequest):
+async def analyze_complexity_stream(req):
     text = req.text.strip()
     if not text:
         raise HTTPException(status_code=400, detail="No text provided")
@@ -277,4 +282,4 @@ def home():
     }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8002, reload=True)
+    uvicorn.run(app, host="127.0.0.1", port=8001, reload=True)
