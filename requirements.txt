@@ -1,4 +1,6 @@
-fastapi
+asyncio
 pydantic
+fastapi[standard]
 uvicorn
+nltk
 numpy
