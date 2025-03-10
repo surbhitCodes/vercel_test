@@ -15,10 +15,8 @@ RUN pip install -r /app/text_analysis/requirements.txt
 COPY . /app
 ENV PYTHONPATH="/app"
 
-RUN python -m nltk.downloader brown punkt averaged_perceptron_tagger vader_lexicon punkt_tab
-
 # Expose the public-facing port for Fly.io
-EXPOSE 8001
+EXPOSE 8002
 
 # Start only core and text_analysis services
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 8001"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 8002"]
